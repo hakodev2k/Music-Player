@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <title>Music Player</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>MyPlayer</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app">
-  <!-- Sidebar -->
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <h1>🎧 MyPlayer</h1>
     <button id="allTab" class="active">All Songs</button>
     <button id="favTab">❤️ Favorites</button>
   </aside>
 
-  <!-- Main -->
+  <!-- MAIN -->
   <main class="main">
     <input id="search" placeholder="🔍 Search song..." />
-
     <ul id="playlist"></ul>
   </main>
 
-  <!-- Player -->
+  <!-- PLAYER -->
   <footer class="player">
     <div class="song-info" id="nowPlaying">Select a song</div>
 
@@ -35,14 +34,14 @@
 
     <div class="progress">
       <span id="currentTime">0:00</span>
-      <input type="range" id="progress" />
+      <input type="range" id="progress" value="0">
       <span id="duration">0:00</span>
     </div>
 
     <div class="extra">
       <button id="shuffle">🔀</button>
       <button id="repeat">🔁</button>
-      🔊 <input type="range" id="volume" min="0" max="1" step="0.01" value="1" />
+      🔊 <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
     </div>
   </footer>
 </div>
