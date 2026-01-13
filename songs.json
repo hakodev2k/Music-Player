@@ -1,1 +1,7 @@
-
+[
+  {
+    "title": "Song One",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/song1.mp3"
+  }
+]
