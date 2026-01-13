@@ -13,7 +13,7 @@ let currentIndex = -1;
 let isShuffle = false;
 let repeatMode = "off"; // off | one | all
 
-fetch("https://raw.githubusercontent.com/USERNAME/REPO/main/songs.json")
+fetch("https://raw.githubusercontent.com/hakodev2k/Music-Player/main/songs.json")
   .then(res => res.json())
   .then(data => {
     songs = data;
