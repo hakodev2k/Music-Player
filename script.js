@@ -5,53 +5,54 @@ const nowPlaying = document.getElementById("nowPlaying");
 const playBtn = document.getElementById("play");
 const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("prev");
-const shuffleBtn = document.getElementById("shuffle");
-const repeatBtn = document.getElementById("repeat");
-const favoriteBtn = document.getElementById("favorite");
+const favBtn = document.getElementById("favorite");
 
 const progress = document.getElementById("progress");
 const currentTimeEl = document.getElementById("currentTime");
 const durationEl = document.getElementById("duration");
-const volumeSlider = document.getElementById("volume");
+const volume = document.getElementById("volume");
+
+const searchInput = document.getElementById("search");
+const allTab = document.getElementById("allTab");
+const favTab = document.getElementById("favTab");
 
 let songs = [];
+let filteredSongs = [];
 let currentIndex = -1;
-let isShuffle = false;
-let repeatMode = "off"; // off | one | all
 let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+let currentTab = "all";
 
-/* ================= LOAD SONGS ================= */
+/* ===== LOAD SONGS ===== */
 fetch("https://raw.githubusercontent.com/hakodev2k/Music-Player/main/songs.json")
-  .then(res => res.json())
+  .then(r => r.json())
   .then(data => {
     songs = data;
-    renderPlaylist();
+    filteredSongs = songs;
+    render();
   });
 
-/* ================= PLAYLIST ================= */
-function renderPlaylist() {
+/* ===== RENDER ===== */
+function render() {
   playlistEl.innerHTML = "";
-  songs.forEach((song, index) => {
+  filteredSongs.forEach((s, i) => {
     const li = document.createElement("li");
-    li.textContent = `${song.title} - ${song.artist}`;
-    if (favorites.includes(song.url)) li.textContent += " ❤️";
-    if (index === currentIndex) li.classList.add("active");
-    li.onclick = () => playSong(index);
+    li.textContent = `${s.title} - ${s.artist}${favorites.includes(s.url) ? " ❤️" : ""}`;
+    li.onclick = () => playSong(i);
     playlistEl.appendChild(li);
   });
 }
 
-function playSong(index) {
-  currentIndex = index;
-  audio.src = songs[index].url;
+/* ===== PLAY ===== */
+function playSong(i) {
+  currentIndex = i;
+  audio.src = filteredSongs[i].url;
   audio.play();
-  nowPlaying.textContent = `🎶 ${songs[index].title}`;
   playBtn.textContent = "⏸";
-  updateFavoriteUI();
-  renderPlaylist();
+  nowPlaying.textContent = `🎵 ${filteredSongs[i].title}`;
+  updateFavUI();
 }
 
-/* ================= CONTROLS ================= */
+/* ===== CONTROLS ===== */
 playBtn.onclick = () => {
   if (audio.paused) {
     audio.play();
@@ -62,94 +63,73 @@ playBtn.onclick = () => {
   }
 };
 
-nextBtn.onclick = () => nextSong();
-prevBtn.onclick = () => prevSong();
+nextBtn.onclick = () => playSong((currentIndex + 1) % filteredSongs.length);
+prevBtn.onclick = () => playSong((currentIndex - 1 + filteredSongs.length) % filteredSongs.length);
 
-function nextSong() {
-  if (isShuffle) {
-    currentIndex = Math.floor(Math.random() * songs.length);
-  } else {
-    currentIndex++;
-    if (currentIndex >= songs.length) {
-      if (repeatMode === "all") currentIndex = 0;
-      else return;
-    }
-  }
-  playSong(currentIndex);
-}
+/* ===== FAVORITE ===== */
+favBtn.onclick = () => {
+  const id = filteredSongs[currentIndex]?.url;
+  if (!id) return;
 
-function prevSong() {
-  currentIndex--;
-  if (currentIndex < 0) currentIndex = songs.length - 1;
-  playSong(currentIndex);
-}
-
-/* ================= SHUFFLE / REPEAT ================= */
-shuffleBtn.onclick = () => {
-  isShuffle = !isShuffle;
-  shuffleBtn.style.background = isShuffle ? "#1db954" : "#333";
-};
-
-repeatBtn.onclick = () => {
-  repeatMode = repeatMode === "off" ? "one" : repeatMode === "one" ? "all" : "off";
-  repeatBtn.textContent = `🔁 Repeat: ${repeatMode}`;
-};
-
-audio.onended = () => {
-  if (repeatMode === "one") audio.play();
-  else nextSong();
-};
-
-/* ================= PROGRESS ================= */
-audio.ontimeupdate = () => {
-  progress.value = (audio.currentTime / audio.duration) * 100 || 0;
-  currentTimeEl.textContent = formatTime(audio.currentTime);
-};
-
-audio.onloadedmetadata = () => {
-  durationEl.textContent = formatTime(audio.duration);
-};
-
-progress.oninput = () => {
-  audio.currentTime = (progress.value / 100) * audio.duration;
-};
-
-function formatTime(time) {
-  const min = Math.floor(time / 60);
-  const sec = Math.floor(time % 60).toString().padStart(2, "0");
-  return `${min}:${sec}`;
-}
-
-/* ================= VOLUME ================= */
-volumeSlider.oninput = () => {
-  audio.volume = volumeSlider.value;
-};
-
-/* ================= FAVORITE ================= */
-favoriteBtn.onclick = () => {
-  const songId = songs[currentIndex]?.url;
-  if (!songId) return;
-
-  if (favorites.includes(songId)) {
-    favorites = favorites.filter(id => id !== songId);
-  } else {
-    favorites.push(songId);
-  }
+  favorites.includes(id)
+    ? favorites = favorites.filter(x => x !== id)
+    : favorites.push(id);
 
   localStorage.setItem("favorites", JSON.stringify(favorites));
-  updateFavoriteUI();
-  renderPlaylist();
+  updateFavUI();
+  render();
 };
 
-function updateFavoriteUI() {
-  const songId = songs[currentIndex]?.url;
-  if (!songId) return;
+function updateFavUI() {
+  const id = filteredSongs[currentIndex]?.url;
+  favBtn.classList.toggle("active", favorites.includes(id));
+  favBtn.textContent = favorites.includes(id) ? "❤️" : "🤍";
+}
 
-  if (favorites.includes(songId)) {
-    favoriteBtn.textContent = "❤️";
-    favoriteBtn.classList.add("active");
-  } else {
-    favoriteBtn.textContent = "🤍";
-    favoriteBtn.classList.remove("active");
-  }
+/* ===== SEARCH ===== */
+searchInput.oninput = () => {
+  const q = searchInput.value.toLowerCase();
+  filteredSongs = songs.filter(s =>
+    s.title.toLowerCase().includes(q) ||
+    s.artist.toLowerCase().includes(q)
+  );
+  render();
+};
+
+/* ===== FAVORITE TAB ===== */
+favTab.onclick = () => {
+  favTab.classList.add("active");
+  allTab.classList.remove("active");
+  filteredSongs = songs.filter(s => favorites.includes(s.url));
+  render();
+};
+
+allTab.onclick = () => {
+  allTab.classList.add("active");
+  favTab.classList.remove("active");
+  filteredSongs = songs;
+  render();
+};
+
+/* ===== PROGRESS ===== */
+audio.ontimeupdate = () => {
+  progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+  currentTimeEl.textContent = format(audio.currentTime);
+};
+
+audio.onloadedmetadata = () => durationEl.textContent = format(audio.duration);
+
+progress.oninput = () => audio.currentTime = (progress.value / 100) * audio.duration;
+
+volume.oninput = () => audio.volume = volume.value;
+
+function format(t) {
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+/* ===== SERVICE WORKER ===== */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
 }

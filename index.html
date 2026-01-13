@@ -1,46 +1,53 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Music Player</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="player">
-  <h2 id="nowPlaying">🎵 Select a song</h2>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h1>🎧 MyPlayer</h1>
+    <button id="allTab" class="active">All Songs</button>
+    <button id="favTab">❤️ Favorites</button>
+  </aside>
 
-  <audio id="audio"></audio>
+  <!-- Main -->
+  <main class="main">
+    <input id="search" placeholder="🔍 Search song..." />
 
-  <!-- Progress -->
-  <div class="progress-container">
-    <span id="currentTime">0:00</span>
-    <input type="range" id="progress" value="0">
-    <span id="duration">0:00</span>
-  </div>
+    <ul id="playlist"></ul>
+  </main>
 
-  <!-- Controls -->
-  <div class="controls">
-    <button id="prev">⏮</button>
-    <button id="play">▶</button>
-    <button id="next">⏭</button>
-    <button id="favorite">🤍</button>
-  </div>
+  <!-- Player -->
+  <footer class="player">
+    <div class="song-info" id="nowPlaying">Select a song</div>
 
-  <!-- Options -->
-  <div class="options">
-    <button id="shuffle">🔀 Shuffle</button>
-    <button id="repeat">🔁 Repeat: Off</button>
-  </div>
+    <div class="controls">
+      <button id="prev">⏮</button>
+      <button id="play">▶</button>
+      <button id="next">⏭</button>
+      <button id="favorite">🤍</button>
+    </div>
 
-  <!-- Volume -->
-  <div class="volume">
-    🔊 <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
-  </div>
+    <div class="progress">
+      <span id="currentTime">0:00</span>
+      <input type="range" id="progress" />
+      <span id="duration">0:00</span>
+    </div>
 
-  <!-- Playlist -->
-  <ul id="playlist"></ul>
+    <div class="extra">
+      <button id="shuffle">🔀</button>
+      <button id="repeat">🔁</button>
+      🔊 <input type="range" id="volume" min="0" max="1" step="0.01" value="1" />
+    </div>
+  </footer>
 </div>
+
+<audio id="audio"></audio>
 
 <script src="script.js"></script>
 </body>
