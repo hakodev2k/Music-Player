@@ -12,17 +12,33 @@
 
   <audio id="audio"></audio>
 
+  <!-- Progress -->
+  <div class="progress-container">
+    <span id="currentTime">0:00</span>
+    <input type="range" id="progress" value="0">
+    <span id="duration">0:00</span>
+  </div>
+
+  <!-- Controls -->
   <div class="controls">
     <button id="prev">⏮</button>
     <button id="play">▶</button>
     <button id="next">⏭</button>
+    <button id="favorite">🤍</button>
   </div>
 
+  <!-- Options -->
   <div class="options">
     <button id="shuffle">🔀 Shuffle</button>
     <button id="repeat">🔁 Repeat: Off</button>
   </div>
 
+  <!-- Volume -->
+  <div class="volume">
+    🔊 <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
+  </div>
+
+  <!-- Playlist -->
   <ul id="playlist"></ul>
 </div>
 
