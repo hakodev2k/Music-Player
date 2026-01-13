@@ -1,1 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Music Player</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div class="player">
+  <h2 id="nowPlaying">🎵 Select a song</h2>
+
+  <audio id="audio"></audio>
+
+  <div class="controls">
+    <button id="prev">⏮</button>
+    <button id="play">▶</button>
+    <button id="next">⏭</button>
+  </div>
+
+  <div class="options">
+    <button id="shuffle">🔀 Shuffle</button>
+    <button id="repeat">🔁 Repeat: Off</button>
+  </div>
+
+  <ul id="playlist"></ul>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
