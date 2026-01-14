@@ -1,12 +1,92 @@
 [
   {
-    "title": "Song One",
+    "title": "Bông Hoa Nở Muộn",
     "artist": "Unknown",
-    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/song1.mp3"
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Bông Hoa Nở Muộn.mp3"
   },
   {
-    "title": "Song Two",
+    "title": "Chẳng Thể Cảm Hóa",
     "artist": "Unknown",
-    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/song2.mp3"
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Chẳng Thể Cảm Hóa.mp3"
+  },
+  {
+    "title": "Có Mình Và Ta",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Có Mình Và Ta.mp3"
+  },
+  {
+    "title": "Em luôn ở trong tâm trí anh",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Em luôn ở trong tâm trí anh.mp3"
+  },
+  {
+    "title": "Hai Người Hai Hướng",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Hai Người Hai Hướng.mp3"
+  },
+  {
+    "title": "Hoa Tàn Tình Tan",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Hoa Tàn Tình Tan.mp3"
+  },
+  {
+    "title": "Hẹn Hò Nhưng Không Yêu",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Hẹn Hò Nhưng Không Yêu.mp3"
+  },
+  {
+    "title": "Lệ Ngang Trời",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Lệ Ngang Trời.mp3"
+  },
+  {
+    "title": "Lỡ Một Lời Thương",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Lỡ Một Lời Thương.mp3"
+  },
+  {
+    "title": "Nguyệt Hồng Phai",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Nguyệt Hồng Phai.mp3"
+  },
+  {
+    "title": "THƯƠNG THÌ THÔI x HOA TƯỜNG VI",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/THƯƠNG THÌ THÔI x HOA TƯỜNG VI.mp3"
+  },
+  {
+    "title": "Thương Thì Thôi",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Thương Thì Thôi.mp3"
+  },
+  {
+    "title": "Tiếng Pháo Tiễn Người",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Tiếng Pháo Tiễn Người.mp3"
+  },
+  {
+    "title": "Tình Yêu Chắp Vá",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Tình Yêu Chắp Vá.mp3"
+  },
+  {
+    "title": "TƯƠNG TƯ NÀNG CA SĨ",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/TƯƠNG TƯ NÀNG CA SĨ.mp3"
+  },
+  {
+    "title": "Đắng Cay Tuổi Đôi Mươi",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Đắng Cay Tuổi Đôi Mươi.mp3"
+  },
+  {
+    "title": "Đừng Lo Anh Đợi Mà",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/Đừng Lo Anh Đợi Mà.mp3"
+  },
+  {
+    "title": "ĐỪNG NHƯ THÓI QUEN",
+    "artist": "Unknown",
+    "url": "https://raw.githubusercontent.com/hakodev2k/Music-Player/main/music/ĐỪNG NHƯ THÓI QUEN.mp3"
   }
 ]
