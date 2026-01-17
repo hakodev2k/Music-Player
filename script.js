@@ -31,6 +31,35 @@ let isShuffle = false;
 let repeatMode = "off"; // off | one | all
 let playHistory = []; // History of played songs for shuffle mode
 let durationCache = JSON.parse(localStorage.getItem("durationCache")) || {}; // Cache durations
+let artworkUrl = null; // Cache artwork URL
+
+// Generate artwork icon
+function generateArtwork() {
+  if (artworkUrl) return artworkUrl;
+  
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+  
+  // Draw circle background
+  ctx.fillStyle = '#1db954';
+  ctx.beginPath();
+  ctx.arc(256, 256, 256, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Draw play triangle
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.moveTo(200, 150);
+  ctx.lineTo(380, 256);
+  ctx.lineTo(200, 362);
+  ctx.closePath();
+  ctx.fill();
+  
+  artworkUrl = canvas.toDataURL('image/png');
+  return artworkUrl;
+}
 
 /* MOBILE MENU TOGGLE */
 menuToggle.addEventListener('click', () => {
@@ -189,19 +218,19 @@ function playSong(i, fromHistory = false) {
   
   // Update Media Session API for lock screen display
   if ('mediaSession' in navigator) {
-    const iconUrl = window.location.origin + window.location.pathname.replace('index.html', '') + 'favicon.svg';
+    const artwork = generateArtwork();
     
     navigator.mediaSession.metadata = new MediaMetadata({
       title: song.title,
       artist: song.artist,
       album: 'MyPlayer Collection',
       artwork: [
-        { src: iconUrl, sizes: '96x96', type: 'image/svg+xml' },
-        { src: iconUrl, sizes: '128x128', type: 'image/svg+xml' },
-        { src: iconUrl, sizes: '192x192', type: 'image/svg+xml' },
-        { src: iconUrl, sizes: '256x256', type: 'image/svg+xml' },
-        { src: iconUrl, sizes: '384x384', type: 'image/svg+xml' },
-        { src: iconUrl, sizes: '512x512', type: 'image/svg+xml' }
+        { src: artwork, sizes: '512x512', type: 'image/png' },
+        { src: artwork, sizes: '384x384', type: 'image/png' },
+        { src: artwork, sizes: '256x256', type: 'image/png' },
+        { src: artwork, sizes: '192x192', type: 'image/png' },
+        { src: artwork, sizes: '128x128', type: 'image/png' },
+        { src: artwork, sizes: '96x96', type: 'image/png' }
       ]
     });
     
