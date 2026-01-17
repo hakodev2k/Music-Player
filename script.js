@@ -29,6 +29,7 @@ let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
 let isShuffle = false;
 let repeatMode = "off"; // off | one | all
+let playHistory = []; // History of played songs for shuffle mode
 
 /* MOBILE MENU TOGGLE */
 menuToggle.addEventListener('click', () => {
@@ -104,11 +105,20 @@ function render() {
 }
 
 /* PLAY */
-function playSong(i) {
+function playSong(i, fromHistory = false) {
   currentIndex = i;
   const song = filteredSongs[i];
   audio.src = song.url;
   audio.play();
+  
+  // Add to history if not coming from history navigation
+  if (!fromHistory && (playHistory.length === 0 || playHistory[playHistory.length - 1] !== i)) {
+    playHistory.push(i);
+    // Keep history limited to 50 songs
+    if (playHistory.length > 50) {
+      playHistory.shift();
+    }
+  }
   
   // Update play button icon
   playBtn.innerHTML = `
@@ -169,23 +179,44 @@ function nextSong() {
   }
 
   if (isShuffle) {
-    currentIndex = Math.floor(Math.random() * filteredSongs.length);
+    // In shuffle mode, pick a random song
+    let nextIndex;
+    // Avoid playing the same song twice in a row
+    do {
+      nextIndex = Math.floor(Math.random() * filteredSongs.length);
+    } while (nextIndex === currentIndex && filteredSongs.length > 1);
+    currentIndex = nextIndex;
   } else {
     currentIndex++;
-  }
-
-  if (currentIndex >= filteredSongs.length) {
-    if (repeatMode === "all") currentIndex = 0;
-    else return;
+    if (currentIndex >= filteredSongs.length) {
+      if (repeatMode === "all") currentIndex = 0;
+      else return;
+    }
   }
 
   playSong(currentIndex);
 }
 
 function prevSong() {
-  currentIndex--;
-  if (currentIndex < 0) currentIndex = filteredSongs.length - 1;
-  playSong(currentIndex);
+  // If no song is playing, do nothing
+  if (currentIndex === -1 || playHistory.length === 0) return;
+  
+  // Find current position in history
+  const currentHistoryIndex = playHistory.lastIndexOf(currentIndex);
+  
+  if (isShuffle) {
+    // In shuffle mode, go back in play history
+    if (currentHistoryIndex > 0) {
+      const prevIndex = playHistory[currentHistoryIndex - 1];
+      currentIndex = prevIndex;
+      playSong(currentIndex, true);
+    }
+  } else {
+    // In normal mode, go to previous song
+    currentIndex--;
+    if (currentIndex < 0) currentIndex = filteredSongs.length - 1;
+    playSong(currentIndex);
+  }
 }
 
 /* AUTO NEXT FIX */
