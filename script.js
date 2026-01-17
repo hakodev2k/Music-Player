@@ -56,17 +56,34 @@ let lastUpdateTime = Date.now();
 let songsPlayedCount = 0;
 let statsUpdateInterval = null;
 
-// Generate artwork icon
-function generateArtwork() {
-  if (artworkUrl) return artworkUrl;
-  
+// Generate artwork icon with dynamic colors based on song title
+function generateArtwork(songTitle) {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 512;
   const ctx = canvas.getContext('2d');
   
-  // Draw full green background
-  ctx.fillStyle = '#1db954';
+  // Generate consistent colors based on song title (same as background)
+  let hash = 0;
+  for (let i = 0; i < songTitle.length; i++) {
+    hash = songTitle.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const hue1 = Math.abs(hash % 360);
+  const hue2 = (hue1 + 60 + Math.abs((hash >> 8) % 100)) % 360;
+  const hue3 = (hue1 + 120 + Math.abs((hash >> 16) % 100)) % 360;
+  
+  const saturation = 40 + (Math.abs(hash >> 24) % 30);
+  const lightness = 20 + (Math.abs(hash >> 12) % 15);
+  
+  // Create gradient
+  const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+  gradient.addColorStop(0, `hsl(${hue1}, ${saturation}%, ${lightness}%)`);
+  gradient.addColorStop(0.5, `hsl(${hue2}, ${saturation - 10}%, ${lightness + 5}%)`);
+  gradient.addColorStop(1, `hsl(${hue3}, ${saturation - 5}%, ${lightness - 5}%)`);
+  
+  // Draw gradient background
+  ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 512, 512);
   
   // Draw white play triangle in center
@@ -78,8 +95,7 @@ function generateArtwork() {
   ctx.closePath();
   ctx.fill();
   
-  artworkUrl = canvas.toDataURL('image/png');
-  return artworkUrl;
+  return canvas.toDataURL('image/png');
 }
 
 /* DYNAMIC BACKGROUND */
@@ -401,7 +417,7 @@ function playSong(i, fromHistory = false) {
 
   // Update Media Session API for lock screen display
   if ('mediaSession' in navigator) {
-    const artwork = generateArtwork();
+    const artwork = generateArtwork(song.title);
     
     navigator.mediaSession.metadata = new MediaMetadata({
       title: song.title,
