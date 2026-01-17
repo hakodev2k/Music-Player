@@ -189,17 +189,19 @@ function playSong(i, fromHistory = false) {
   
   // Update Media Session API for lock screen display
   if ('mediaSession' in navigator) {
+    const iconUrl = window.location.origin + window.location.pathname.replace('index.html', '') + 'favicon.svg';
+    
     navigator.mediaSession.metadata = new MediaMetadata({
       title: song.title,
       artist: song.artist,
-      album: 'MyPlayer',
+      album: 'MyPlayer Collection',
       artwork: [
-        { src: 'favicon.svg', sizes: '96x96', type: 'image/svg+xml' },
-        { src: 'favicon.svg', sizes: '128x128', type: 'image/svg+xml' },
-        { src: 'favicon.svg', sizes: '192x192', type: 'image/svg+xml' },
-        { src: 'favicon.svg', sizes: '256x256', type: 'image/svg+xml' },
-        { src: 'favicon.svg', sizes: '384x384', type: 'image/svg+xml' },
-        { src: 'favicon.svg', sizes: '512x512', type: 'image/svg+xml' }
+        { src: iconUrl, sizes: '96x96', type: 'image/svg+xml' },
+        { src: iconUrl, sizes: '128x128', type: 'image/svg+xml' },
+        { src: iconUrl, sizes: '192x192', type: 'image/svg+xml' },
+        { src: iconUrl, sizes: '256x256', type: 'image/svg+xml' },
+        { src: iconUrl, sizes: '384x384', type: 'image/svg+xml' },
+        { src: iconUrl, sizes: '512x512', type: 'image/svg+xml' }
       ]
     });
     
