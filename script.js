@@ -187,6 +187,50 @@ function playSong(i, fromHistory = false) {
   songTitle.textContent = song.title;
   songArtist.textContent = song.artist;
   
+  // Update Media Session API for lock screen display
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: song.title,
+      artist: song.artist,
+      album: 'MyPlayer',
+      artwork: [
+        { src: 'favicon.svg', sizes: '96x96', type: 'image/svg+xml' },
+        { src: 'favicon.svg', sizes: '128x128', type: 'image/svg+xml' },
+        { src: 'favicon.svg', sizes: '192x192', type: 'image/svg+xml' },
+        { src: 'favicon.svg', sizes: '256x256', type: 'image/svg+xml' },
+        { src: 'favicon.svg', sizes: '384x384', type: 'image/svg+xml' },
+        { src: 'favicon.svg', sizes: '512x512', type: 'image/svg+xml' }
+      ]
+    });
+    
+    // Setup media session action handlers
+    navigator.mediaSession.setActionHandler('play', () => {
+      audio.play();
+      playBtn.innerHTML = `
+        <svg viewBox="0 0 16 16" width="16" height="16">
+          <path d="M2.7 1a.7.7 0 00-.7.7v12.6a.7.7 0 00.7.7h2.6a.7.7 0 00.7-.7V1.7a.7.7 0 00-.7-.7H2.7zm8 0a.7.7 0 00-.7.7v12.6a.7.7 0 00.7.7h2.6a.7.7 0 00.7-.7V1.7a.7.7 0 00-.7-.7h-2.6z"/>
+        </svg>
+      `;
+    });
+    
+    navigator.mediaSession.setActionHandler('pause', () => {
+      audio.pause();
+      playBtn.innerHTML = `
+        <svg viewBox="0 0 16 16" width="16" height="16">
+          <path d="M3 1.713a.7.7 0 011.05-.607l10.89 6.288a.7.7 0 010 1.212L4.05 14.894A.7.7 0 013 14.288V1.713z"/>
+        </svg>
+      `;
+    });
+    
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      prevSong();
+    });
+    
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      nextSong();
+    });
+  }
+  
   updateFavUI();
   render();
   
