@@ -515,6 +515,9 @@ li .song-number {
 li .song-title {
   color: var(--spotify-text);
   font-weight: 400;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 li .song-artist {
@@ -534,6 +537,7 @@ li .song-duration {
   gap: 2px;
   margin-left: 8px;
   height: 14px;
+  flex-shrink: 0;
 }
 
 .playing-animation span {
