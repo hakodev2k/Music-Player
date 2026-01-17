@@ -30,6 +30,7 @@ let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 let isShuffle = false;
 let repeatMode = "off"; // off | one | all
 let playHistory = []; // History of played songs for shuffle mode
+let durationCache = JSON.parse(localStorage.getItem("durationCache")) || {}; // Cache durations
 
 /* MOBILE MENU TOGGLE */
 menuToggle.addEventListener('click', () => {
@@ -52,8 +53,16 @@ fetch("https://raw.githubusercontent.com/hakodev2k/Music-Player/main/songs.json"
   .then(r => r.json())
   .then(data => {
     songs = data;
+    // Apply cached durations immediately
+    songs.forEach(song => {
+      if (durationCache[song.url]) {
+        song.duration = durationCache[song.url];
+      }
+    });
     filteredSongs = songs;
     render();
+    // Load durations in background for uncached songs
+    loadDurations();
   })
   .catch(err => {
     console.error("Error loading songs:", err);
@@ -62,10 +71,55 @@ fetch("https://raw.githubusercontent.com/hakodev2k/Music-Player/main/songs.json"
       .then(r => r.json())
       .then(data => {
         songs = data;
+        // Apply cached durations immediately
+        songs.forEach(song => {
+          if (durationCache[song.url]) {
+            song.duration = durationCache[song.url];
+          }
+        });
         filteredSongs = songs;
         render();
+        loadDurations();
       });
   });
+
+/* LOAD DURATIONS */
+function loadDurations() {
+  songs.forEach((song, index) => {
+    // Skip if already cached
+    if (durationCache[song.url]) {
+      song.duration = durationCache[song.url];
+      return;
+    }
+    
+    // Create temp audio element to load metadata
+    const tempAudio = new Audio();
+    tempAudio.preload = 'metadata';
+    
+    tempAudio.addEventListener('loadedmetadata', () => {
+      if (tempAudio.duration && !isNaN(tempAudio.duration) && isFinite(tempAudio.duration)) {
+        const formatted = formatDuration(tempAudio.duration);
+        song.duration = formatted;
+        durationCache[song.url] = formatted;
+        
+        // Save to localStorage
+        localStorage.setItem("durationCache", JSON.stringify(durationCache));
+        
+        // Update UI if this song is visible
+        render();
+      }
+    });
+    
+    tempAudio.src = song.url;
+  });
+}
+
+function formatDuration(seconds) {
+  if (isNaN(seconds)) return "--:--";
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
 
 /* RENDER */
 function render() {
