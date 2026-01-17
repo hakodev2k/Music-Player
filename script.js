@@ -22,6 +22,7 @@ const settingsTab = document.getElementById("settingsTab");
 
 const menuToggle = document.getElementById("menuToggle");
 const sidebar = document.getElementById("sidebar");
+const backgroundGradient = document.getElementById("backgroundGradient");
 
 // Settings elements
 const settingsModal = document.getElementById("settingsModal");
@@ -79,6 +80,39 @@ function generateArtwork() {
   
   artworkUrl = canvas.toDataURL('image/png');
   return artworkUrl;
+}
+
+/* DYNAMIC BACKGROUND */
+function generateBackgroundForSong(songTitle) {
+  // Generate consistent colors based on song title
+  let hash = 0;
+  for (let i = 0; i < songTitle.length; i++) {
+    hash = songTitle.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  // Generate 2-3 colors for gradient
+  const hue1 = Math.abs(hash % 360);
+  const hue2 = (hue1 + 60 + Math.abs((hash >> 8) % 100)) % 360;
+  const hue3 = (hue1 + 120 + Math.abs((hash >> 16) % 100)) % 360;
+  
+  // Use darker, more muted colors for better readability
+  const saturation = 40 + (Math.abs(hash >> 24) % 30); // 40-70%
+  const lightness = 20 + (Math.abs(hash >> 12) % 15);  // 20-35%
+  
+  const color1 = `hsl(${hue1}, ${saturation}%, ${lightness}%)`;
+  const color2 = `hsl(${hue2}, ${saturation - 10}%, ${lightness + 5}%)`;
+  const color3 = `hsl(${hue3}, ${saturation - 5}%, ${lightness - 5}%)`;
+  
+  // Random gradient direction
+  const angles = [135, 180, 225, 270, 315];
+  const angle = angles[Math.abs(hash) % angles.length];
+  
+  return `linear-gradient(${angle}deg, ${color1} 0%, ${color2} 50%, ${color3} 100%)`;
+}
+
+function updateBackground(songTitle) {
+  const gradient = generateBackgroundForSong(songTitle);
+  backgroundGradient.style.background = gradient;
 }
 
 /* SETTINGS MODAL */
@@ -350,6 +384,9 @@ function playSong(i, fromHistory = false) {
   songTitle.textContent = song.title;
   songArtist.textContent = song.artist;
   
+  // Update dynamic background
+  updateBackground(song.title);
+
   // Update Media Session API for lock screen display
   if ('mediaSession' in navigator) {
     const artwork = generateArtwork();

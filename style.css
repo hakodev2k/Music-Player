@@ -29,6 +29,28 @@ body {
   height: -webkit-fill-available;
 }
 
+/* DYNAMIC BACKGROUND */
+.background-gradient {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #121212 100%);
+  transition: background 1.5s ease;
+}
+
+.background-gradient::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 50%, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+}
+
 /* APP LAYOUT */
 .app {
   display: grid;
@@ -39,6 +61,8 @@ body {
   gap: 8px;
   padding: 8px;
   padding-bottom: 0;
+  position: relative;
+  z-index: 1;
 }
 
 /* MOBILE MENU TOGGLE */
@@ -83,7 +107,8 @@ body {
 
 /* SIDEBAR */
 .sidebar {
-  background: var(--spotify-black);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
   border-radius: 8px;
   padding: 24px 12px;
   overflow-y: auto;
@@ -194,7 +219,8 @@ body {
 }
 
 .modal-content {
-  background: var(--spotify-gray);
+  background: rgba(24, 24, 24, 0.95);
+  backdrop-filter: blur(20px);
   border-radius: 8px;
   width: 90%;
   max-width: 500px;
@@ -386,7 +412,8 @@ body {
 
 /* MAIN */
 .main {
-  background: var(--spotify-dark);
+  background: rgba(18, 18, 18, 0.6);
+  backdrop-filter: blur(10px);
   border-radius: 8px;
   padding: 24px;
   overflow-y: auto;
@@ -503,7 +530,8 @@ li .song-duration {
 /* PLAYER */
 .player {
   grid-column: 1 / 3;
-  background: var(--spotify-gray);
+  background: rgba(24, 24, 24, 0.7);
+  backdrop-filter: blur(10px);
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
