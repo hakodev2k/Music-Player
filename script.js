@@ -42,18 +42,16 @@ function generateArtwork() {
   canvas.height = 512;
   const ctx = canvas.getContext('2d');
   
-  // Draw circle background
+  // Draw full green background
   ctx.fillStyle = '#1db954';
-  ctx.beginPath();
-  ctx.arc(256, 256, 256, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.fillRect(0, 0, 512, 512);
   
-  // Draw play triangle
+  // Draw white play triangle in center
   ctx.fillStyle = '#ffffff';
   ctx.beginPath();
-  ctx.moveTo(200, 150);
-  ctx.lineTo(380, 256);
-  ctx.lineTo(200, 362);
+  ctx.moveTo(200, 140);
+  ctx.lineTo(370, 256);
+  ctx.lineTo(200, 372);
   ctx.closePath();
   ctx.fill();
   
