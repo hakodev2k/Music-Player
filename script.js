@@ -18,9 +18,20 @@ const volume = document.getElementById("volume");
 const searchInput = document.getElementById("search");
 const allTab = document.getElementById("allTab");
 const favTab = document.getElementById("favTab");
+const settingsTab = document.getElementById("settingsTab");
 
 const menuToggle = document.getElementById("menuToggle");
 const sidebar = document.getElementById("sidebar");
+
+// Settings elements
+const settingsModal = document.getElementById("settingsModal");
+const closeSettings = document.getElementById("closeSettings");
+const sleepTimerSelect = document.getElementById("sleepTimer");
+const sleepTimerStatus = document.getElementById("sleepTimerStatus");
+
+// Stats elements
+const totalTimeEl = document.getElementById("totalTime");
+const songsPlayedEl = document.getElementById("songsPlayed");
 
 let songs = [];
 let filteredSongs = [];
@@ -32,6 +43,17 @@ let repeatMode = "off"; // off | one | all
 let playHistory = []; // History of played songs for shuffle mode
 let durationCache = JSON.parse(localStorage.getItem("durationCache")) || {}; // Cache durations
 let artworkUrl = null; // Cache artwork URL
+
+// Sleep timer
+let sleepTimerTimeout = null;
+let sleepTimerEndTime = null;
+
+// Listening stats (session only)
+let sessionStartTime = Date.now();
+let totalListeningTime = 0; // in seconds
+let lastUpdateTime = Date.now();
+let songsPlayedCount = 0;
+let statsUpdateInterval = null;
 
 // Generate artwork icon
 function generateArtwork() {
@@ -58,6 +80,114 @@ function generateArtwork() {
   artworkUrl = canvas.toDataURL('image/png');
   return artworkUrl;
 }
+
+/* SETTINGS MODAL */
+settingsTab.onclick = () => {
+  settingsModal.classList.add('show');
+  // Close sidebar on mobile
+  if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+    sidebar.classList.remove('open');
+    menuToggle.classList.remove('active');
+  }
+};
+
+closeSettings.onclick = () => {
+  settingsModal.classList.remove('show');
+};
+
+settingsModal.onclick = (e) => {
+  if (e.target === settingsModal) {
+    settingsModal.classList.remove('show');
+  }
+};
+
+// Sleep Timer
+sleepTimerSelect.onchange = () => {
+  const value = sleepTimerSelect.value;
+  
+  // Clear existing timer
+  if (sleepTimerTimeout) {
+    clearTimeout(sleepTimerTimeout);
+    sleepTimerTimeout = null;
+    sleepTimerEndTime = null;
+  }
+  
+  if (value === 'off') {
+    sleepTimerStatus.classList.remove('active');
+    return;
+  }
+  
+  const minutes = parseInt(value);
+  sleepTimerEndTime = Date.now() + (minutes * 60 * 1000);
+  
+  sleepTimerTimeout = setTimeout(() => {
+    audio.pause();
+    playBtn.innerHTML = `
+      <svg viewBox="0 0 16 16" width="16" height="16">
+        <path d="M3 1.713a.7.7 0 011.05-.607l10.89 6.288a.7.7 0 010 1.212L4.05 14.894A.7.7 0 013 14.288V1.713z"/>
+      </svg>
+    `;
+    sleepTimerStatus.textContent = '😴 Sleep timer ended';
+    sleepTimerSelect.value = 'off';
+    setTimeout(() => {
+      sleepTimerStatus.classList.remove('active');
+    }, 3000);
+  }, minutes * 60 * 1000);
+  
+  updateSleepTimerDisplay();
+  sleepTimerStatus.classList.add('active');
+  
+  // Update display every second
+  const timerInterval = setInterval(() => {
+    if (!sleepTimerEndTime) {
+      clearInterval(timerInterval);
+      return;
+    }
+    updateSleepTimerDisplay();
+  }, 1000);
+};
+
+function updateSleepTimerDisplay() {
+  if (!sleepTimerEndTime) return;
+  
+  const remaining = sleepTimerEndTime - Date.now();
+  if (remaining <= 0) {
+    sleepTimerStatus.classList.remove('active');
+    return;
+  }
+  
+  const minutes = Math.floor(remaining / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+  sleepTimerStatus.textContent = `🌙 ${minutes}:${seconds.toString().padStart(2, '0')} remaining`;
+}
+
+/* LISTENING STATS */
+function updateStats() {
+  if (!audio.paused && audio.duration) {
+    const now = Date.now();
+    const elapsed = (now - lastUpdateTime) / 1000; // seconds
+    totalListeningTime += elapsed;
+    lastUpdateTime = now;
+    
+    const hours = Math.floor(totalListeningTime / 3600);
+    const minutes = Math.floor((totalListeningTime % 3600) / 60);
+    
+    totalTimeEl.textContent = `${hours}h ${minutes}m`;
+    songsPlayedEl.textContent = `${songsPlayedCount} song${songsPlayedCount !== 1 ? 's' : ''}`;
+  }
+}
+
+// Update stats every 10 seconds
+setInterval(updateStats, 10000);
+
+// Update lastUpdateTime when play/pause
+audio.onplay = () => {
+  lastUpdateTime = Date.now();
+};
+
+audio.onpause = () => {
+  updateStats();
+};
 
 /* MOBILE MENU TOGGLE */
 menuToggle.addEventListener('click', () => {
@@ -191,6 +321,12 @@ function playSong(i, fromHistory = false) {
   const song = filteredSongs[i];
   audio.src = song.url;
   audio.play();
+  
+  // Increment songs played count
+  if (!fromHistory) {
+    songsPlayedCount++;
+    updateStats();
+  }
   
   // Add to history if not coming from history navigation
   if (!fromHistory && (playHistory.length === 0 || playHistory[playHistory.length - 1] !== i)) {
